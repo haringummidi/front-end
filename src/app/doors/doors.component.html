@@ -1,0 +1,51 @@
+<div class="row" style="padding: 2rem">
+  <div class="col-sm-3">
+    <div class="card text-center" style="width: 18rem; margin: auto">
+      <img src="../../assets/door.png" *ngIf="!door1.isClosed" class="card-img-top" alt="...">
+      <img src="../../assets/door_closed.png" style="margin: auto; max-width: 52%" *ngIf="door1.isClosed" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">Door 1</h5>
+        <p class="card-text">Status : {{door1.status}}</p>
+        <a class="btn btn-primary" *ngIf="door1.isClosed" (click)="onDoor1Open()">open</a>
+        <a class="btn btn-primary" *ngIf="!door1.isClosed" (click)="onDoor1Close()">close</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="card text-center" style="width: 18rem; margin: auto">
+      <img src="../../assets/door.png" *ngIf="!door2.isClosed" class="card-img-top" alt="...">
+      <img src="../../assets/door_closed.png" style="margin: auto; max-width: 52%" *ngIf="door2.isClosed" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">Door 2</h5>
+        <p class="card-text">Status : {{door2.status}}</p>
+        <a class="btn btn-primary" *ngIf="door2.isClosed" (click)="onDoor2Open()">open</a>
+        <a class="btn btn-primary" *ngIf="!door2.isClosed" (click)="onDoor2Close()">close</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="card text-center" style="width: 18rem; margin: auto">
+      <img src="../../assets/door.png" *ngIf="!door3.isClosed" class="card-img-top" alt="...">
+      <img src="../../assets/door_closed.png" style="margin: auto; max-width: 52%" *ngIf="door3.isClosed" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">Door 3</h5>
+        <p class="card-text">Status : {{door3.status}}</p>
+        <a class="btn btn-primary" *ngIf="door3.isClosed" (click)="onDoor3Open()">open</a>
+        <a class="btn btn-primary" *ngIf="!door3.isClosed" (click)="onDoor3Close()">close</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="card text-center" style="width: 18rem; margin: auto">
+      <img src="../../assets/door.png" *ngIf="!door4.isClosed" class="card-img-top" alt="...">
+      <img src="../../assets/door_closed.png" style="margin: auto; max-width: 52%" *ngIf="door4.isClosed" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">Door 4</h5>
+        <p class="card-text">Status : {{door4.status}}</p>
+        <a class="btn btn-primary" *ngIf="door4.isClosed" (click)="onDoor4Open()">open</a>
+        <a class="btn btn-primary" *ngIf="!door4.isClosed" (click)="onDoor4Close()">close</a>
+      </div>
+    </div>
+  </div>
+</div>
+
