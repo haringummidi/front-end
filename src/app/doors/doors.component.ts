@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {timer} from 'rxjs';
-import {timeout} from 'rxjs/operators';
+import {Howl, Howler} from 'howler';
+
+// import {timeout} from 'rxjs/operators';
 
 @Component({
   selector: 'app-doors',
@@ -12,6 +14,8 @@ export class DoorsComponent implements OnInit {
   door2: any;
   door3: any;
   door4: any;
+  beeper: any;
+  isBeeperPlaying = false;
 
   constructor() {
   }
@@ -21,6 +25,41 @@ export class DoorsComponent implements OnInit {
     this.door2 = this.createDoor();
     this.door3 = this.createDoor();
     this.door4 = this.createDoor();
+    this.beeper = this.playAudio('beep');
+  }
+
+  playAudio(key: string) {
+    // Change global volume.
+    Howler.volume(0.5);
+
+    if (key === 'open-door') {
+      const door = new Howl({
+        src: ['../../assets/audio/door.wav']
+      });
+      door.on('end', () => {
+        console.log('Please close door sound finished!');
+      });
+      return door;
+    }
+
+    if (key === 'beep') {
+      const beep = new Howl({
+        src: ['../../assets/audio/beep.wav'],
+        loop: true
+      });
+      beep.on('end', () => {
+        console.log('beep sound finished!');
+      });
+      return beep;
+    }
+  }
+
+  shutBeeper() {
+    if (this.door1.isClosed && this.door2.isClosed && this.door3.isClosed && this.door4.isClosed) {
+      this.isBeeperPlaying = false;
+      this.beeper.stop();
+    }
+    return ;
   }
 
   createDoor() {
@@ -40,6 +79,7 @@ export class DoorsComponent implements OnInit {
 
   onDoor1Close() {
     this.door1.isClosed = !this.door1.isClosed;
+    this.shutBeeper();
     this.door1.status = 'door is closed';
   }
 
@@ -53,6 +93,7 @@ export class DoorsComponent implements OnInit {
 
   onDoor2Close() {
     this.door2.isClosed = !this.door2.isClosed;
+    this.shutBeeper();
     this.door2.status = 'door is closed';
   }
 
@@ -66,6 +107,7 @@ export class DoorsComponent implements OnInit {
 
   onDoor3Close() {
     this.door3.isClosed = !this.door3.isClosed;
+    this.shutBeeper();
     this.door3.status = 'door is closed';
   }
 
@@ -79,6 +121,7 @@ export class DoorsComponent implements OnInit {
 
   onDoor4Close() {
     this.door4.isClosed = !this.door4.isClosed;
+    this.shutBeeper();
     this.door4.status = 'door is closed';
   }
 
@@ -89,42 +132,49 @@ export class DoorsComponent implements OnInit {
     //   if (door.isClosed) {
     //     break;
     //   }
-      // tslint:disable-next-line:no-shadowed-variable
-      let i = 1;
-      let sub = timer(0, 1000).subscribe(i => {
-        console.log(i);
-        if ( door.isClosed) {
-          console.log('unsubscribed as door is closed')
-          sub.unsubscribe();
-        }
-        if (i === 29) {
+    // tslint:disable-next-line:no-shadowed-variable
+
+    const i = 1;
+    // tslint:disable-next-line:no-shadowed-variable
+    const sub = timer(0, 1000).subscribe(i => {
+      console.log(i);
+      if (door.isClosed) {
+        console.log('unsubscribed as door is closed');
+        sub.unsubscribe();
+      }
+      if (i === 29) {
+        if (!door.isClosed) {
+          console.log('after 30 seconds');
           if (!door.isClosed) {
-            console.log('after 30 seconds');
-            if (!door.isClosed) {
-              console.log('Triggering Voice Prompt');
-              door.status = 'Voice Prompt Alarm 2. close now';
-              // door.isClosed = !door.isClosed;
-            } else {
-              console.log('door is already closed, so doing nothing');
-            }
-          }
-        }
-        if (i === 59) {
-          if (!door.isClosed) {
-            console.log('after 60 seconds');
-            console.log('Triggering Panel display');
-            door.status = 'Panel display of ALARMS ON DSU';
+            console.log('Triggering Voice Prompt');
+            this.playAudio('open-door').play();
+            door.status = 'Voice Prompt Alarm 2. close now';
             // door.isClosed = !door.isClosed;
           } else {
             console.log('door is already closed, so doing nothing');
           }
         }
-      });
+      }
+      if (i === 59) {
+        if (!door.isClosed) {
+          console.log('after 60 seconds');
+          console.log('Triggering Panel display');
+          door.status = 'Panel display of ALARMS ON DSU';
+          if (!this.isBeeperPlaying) {
+            this.isBeeperPlaying = true;
+            this.beeper.play();
+          }
+          // door.isClosed = !door.isClosed;
+        } else {
+          console.log('door is already closed, so doing nothing');
+        }
+      }
+    });
 
-      setTimeout( () => {
-        console.log('unsubscribed at 60');
-        sub.unsubscribe();
-      }, 60000);
+    setTimeout(() => {
+      console.log('unsubscribed at 60');
+      sub.unsubscribe();
+    }, 60000);
 
     // }
 
