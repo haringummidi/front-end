@@ -15,7 +15,10 @@ export class DoorsComponent implements OnInit {
   door3: any;
   door4: any;
   beeper: any;
+  door: any;
   isBeeperPlaying = false;
+  isDoorPlaying = false;
+  doorSub: any;
 
   constructor() {
   }
@@ -26,6 +29,7 @@ export class DoorsComponent implements OnInit {
     this.door3 = this.createDoor();
     this.door4 = this.createDoor();
     this.beeper = this.playAudio('beep');
+    this.door = this.playAudio('open-door');
   }
 
   playAudio(key: string) {
@@ -59,7 +63,16 @@ export class DoorsComponent implements OnInit {
       this.isBeeperPlaying = false;
       this.beeper.stop();
     }
-    return ;
+    return;
+  }
+
+  shutDoor() {
+    if (this.door1.isClosed && this.door2.isClosed && this.door3.isClosed && this.door4.isClosed) {
+      this.isDoorPlaying = false;
+      this.doorSub.unsubscribe();
+      this.door.stop();
+    }
+    return;
   }
 
   createDoor() {
@@ -80,6 +93,7 @@ export class DoorsComponent implements OnInit {
   onDoor1Close() {
     this.door1.isClosed = !this.door1.isClosed;
     this.shutBeeper();
+    this.shutDoor();
     this.door1.status = 'door is closed';
   }
 
@@ -94,6 +108,7 @@ export class DoorsComponent implements OnInit {
   onDoor2Close() {
     this.door2.isClosed = !this.door2.isClosed;
     this.shutBeeper();
+    this.shutDoor();
     this.door2.status = 'door is closed';
   }
 
@@ -108,6 +123,7 @@ export class DoorsComponent implements OnInit {
   onDoor3Close() {
     this.door3.isClosed = !this.door3.isClosed;
     this.shutBeeper();
+    this.shutDoor();
     this.door3.status = 'door is closed';
   }
 
@@ -122,6 +138,7 @@ export class DoorsComponent implements OnInit {
   onDoor4Close() {
     this.door4.isClosed = !this.door4.isClosed;
     this.shutBeeper();
+    this.shutDoor();
     this.door4.status = 'door is closed';
   }
 
@@ -147,7 +164,10 @@ export class DoorsComponent implements OnInit {
           console.log('after 30 seconds');
           if (!door.isClosed) {
             console.log('Triggering Voice Prompt');
-            this.playAudio('open-door').play();
+
+            this.doorSub = timer(0, 5000).subscribe(j => {
+              this.door.play();
+            });
             door.status = 'Voice Prompt Alarm 2. close now';
             // door.isClosed = !door.isClosed;
           } else {
@@ -172,7 +192,7 @@ export class DoorsComponent implements OnInit {
     });
 
     setTimeout(() => {
-      console.log('unsubscribed at 60');
+      // console.log('unsubscribed at 60');
       sub.unsubscribe();
     }, 60000);
 
